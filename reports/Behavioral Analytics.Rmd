@@ -1,0 +1,28 @@
+---
+title: "Behavioral Analytics"
+author: "Thabsheera"
+date: "11/04/2022"
+output:
+  pdf_document: default
+  html_document: default
+  word_document: default
+urlcolor: blue
+header-includes:
+ \usepackage{float}
+ \floatplacement{figure}{H}
+ \floatplacement{table}{H}
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_knit$set(root.dir= normalizePath('..'))
+```
+
+```{r ProjectTemplate,include=FALSE}
+library(ProjectTemplate)
+load.project()
+```
+
+```{r,include=FALSE}
+source("src/eda_Q2.R")
+```

@@ -1,0 +1,33 @@
+---
+title: Predicting & Understanding The Behavioural Footprint Of Older Adults In The UK
+authors:
+  - name: Thabsheera Puliyadan Kunnil
+    thanks: Use footnote for providing further information about author (webpage, alternative address)---*not* for acknowledging funding agencies. Optional.
+    department: School of Computing
+    affiliation: Newcastle University, UK
+    location: Newcastle Upon Tyne, UK
+    email: thabsheerapk@gmail.com
+    
+    
+  - name: Nic Palmarini
+    department: Department of Population Health Science
+    affiliation: UK National Innovation Centre for Ageing(NICA)
+    location: Newcastle Upon Tyne, UK
+    email: Nic.Palmarini@ncl.ac.uk
+    
+    
+abstract: |
+  Understanding a person's behaviour paves significant opportunities  .
+keywords:
+  - Behavioural Analytics
+  - Time Series Classification
+  - Random Forest
+  - Ageing Intelligence
+bibliography: references.bib
+biblio-style: unsrt
+output: rticles::arxiv_article
+---
+
+# Introduction
+
+
