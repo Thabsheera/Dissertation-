@@ -30,7 +30,10 @@ uktus15_diary_ep_long<- uktus15_diary_ep_long%>%
                                                                                     ifelse(DVAge<=94,"85-94",
                                                                                            "95+"
                                                                
-                                                        )))))))))))
+                                                        )))))))))))%>%
+  mutate(dow=ifelse(ddayw %in% c('Saturday','Sunday') , 'Sat-Sun','Mon-Fri'))
+  
+  
 
 
 
@@ -54,7 +57,7 @@ diary_long_df$hour<- as.numeric(substr(diary_long_df$tid,start = 1,stop = 2))
 household_filtered<- uktus15_household%>%
   select(-HhOut,-strata,-psu,-IMonth,-IYear)
 
-View(head(diary_long_df%>%left_join(household_filtered)))
+# View(head(diary_long_df%>%left_join(household_filtered)))
 
 
 # joining the individual data to diary table
@@ -63,10 +66,15 @@ View(head(diary_long_df%>%left_join(household_filtered)))
 
 individual_filtered<- uktus15_individual%>%
   select(-strata,-psu,-HhOut,-IndOut,-IMonth,-IYear,-DMFlag,-DVAge)
+individual_filtered$dhhtype<- as.character(individual_filtered$dhhtype)
+# View(head(diary_long_df%>%left_join(individual_filtered)))
 
-View(head(diary_long_df%>%left_join(individual_filtered)))
+diary_ind_mapped<-diary_long_df%>%
+  left_join(individual_filtered)%>%
+  mutate(hhtype=ifelse(is.na(dhhtype),NA,ifelse(grepl(x = dhhtype,pattern = 'with children',ignore.case = TRUE),"Household With Children",
+                       ifelse(dhhtype=='Single person household','Single person household',
+                              'Household Without Children'))))
 
-diary_ind_mapped<-diary_long_df%>%left_join(individual_filtered)
 
 # since household data already in individual data, considering only individual data
 
@@ -80,11 +88,30 @@ diary_ind_mapped<-diary_long_df%>%left_join(individual_filtered)
 wksched_filtered<- uktus15_wksched%>%
   select(-strata,-psu)
 
-View(head(diary_long_df%>%left_join(wksched_filtered)))
+# View(head(diary_long_df%>%left_join(wksched_filtered)))
 
 
 
 
 
+#-------------------------------------------------------
 
+# creating the table with most frequent activity 
+#  at that hour
+# --------------------------------------------------
+
+
+frequent_activity_hourly<- diary_ind_mapped%>%
+  group_by(serial,pnum,ddayw,hour,whatdoing,Macro.Group)%>%
+  summarise(freq=n())%>%
+  arrange(desc(freq))%>% 
+  group_by(serial,pnum,ddayw,hour)%>%
+  mutate(rank = rank(desc(freq), ties.method = "first"))%>%
+  filter(rank==1)
+
+
+# inner joining with initial table 
+
+diary_ind_mapped_simplified<- diary_ind_mapped%>%
+  inner_join(frequent_activity_hourly)
 
