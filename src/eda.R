@@ -44,18 +44,18 @@ ggplot(activity_freq,aes(x="",y=freq,fill=whatdoing))+
   #           position = position_stack(vjust = 0.5))
 hist(uktus15_diary_ep_long$whatdoing)
 
-ggplot(activity_freq,aes(x=tid,y=whatdoing,size=freq))+
-  geom_point()
+# ggplot(activity_freq,aes(x=tid,y=whatdoing,size=freq))+
+#   geom_point()
 library(data.table)
-p<-ggplot(uktus15_diary_ep_long%>%
-            filter(tid %like% "^10:10"), aes(whatdoing)) +
-  geom_bar(fill = "#0073C2FF") +
-  theme_pubclean()
-ggplotly(p)
+# p<-ggplot(uktus15_diary_ep_long%>%
+#             filter(tid %like% "^10:10"), aes(whatdoing)) +
+#   geom_bar(fill = "#0073C2FF") +
+#   theme_pubclean()
+# ggplotly(p)
 
-View(uktus15_diary_ep_long%>%
-       filter(tid %like% "^10")
-     )
+# View(uktus15_diary_ep_long%>%
+#        filter(tid %like% "^10")
+#      )
 
 
 summary(uktus15_diary_ep_long)
@@ -88,7 +88,6 @@ summary(uktus15_diary_ep_long)
 # using the table diary_ind_mapped
 
 macro_behavior_freq<- diary_ind_mapped%>%
-  mutate(dow=ifelse(ddayw %in% c('Saturday','Sunday') , 'Sat-Sun','Mon-Fri'))%>%
   group_by(Macro.Group,dow)%>%
   summarise(Freq=n())%>%
   arrange(desc(Freq))
@@ -113,7 +112,7 @@ ggplot(macro_behavior_freq,aes(x=reorder(Macro.Group,-Freq),y=Freq))+
 # Q2 - How's the activity usage varies across 
 #      household type 
 
-View(data.frame(colnames(diary_ind_mapped)))
+# View(data.frame(colnames(diary_ind_mapped)))
 
 unique(diary_ind_mapped$dhhtype)
 sum(is.na(diary_ind_mapped$dhhtype))
@@ -147,20 +146,42 @@ ggplot(macro_behavior_freq_hhtype,aes(x=reorder(Macro.Group,-Freq_per_hh),y=Freq
 
 diary_ind_mapped$DVAge<- as.numeric(as.character(diary_ind_mapped$DVAge))
 macro_behavior_freq<- diary_ind_mapped%>%
-  mutate(dow=ifelse(ddayw %in% c('Saturday','Sunday') , 'Sat-Sun','Mon-Fri'))%>%
   mutate(age_group=ifelse(DVAge<=14,'Children',
                           ifelse(DVAge<=24 ,'Youth',
                                  ifelse(DVAge<=64,'Adults',
                                         'Seniors'))))%>%
-  group_by(Macro.Group,age_group)%>%
+  group_by(Macro.Group,generation)%>%
   summarise(Freq=n())%>%
   arrange(desc(Freq))
 
-ggplot(macro_behavior_freq,aes(x=reorder(Macro.Group,-Freq),y=Freq))+
+ggplot(macro_behavior_freq%>%
+         filter(generation %in% c("Baby Boomers" ,"Gen X")),
+       aes(x=reorder(Macro.Group,-Freq),y=Freq))+
   geom_col()+ 
   theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1,size = 7))+
-  facet_wrap(. ~ age_group)
+  facet_wrap(. ~ generation)
 
+
+#----------------------------------------------
+# -----------------Q3
+#---------------------------------------------
+
+# Q3 - the activities by different 
+# psychosocial group on 
+#       different day of the week?
+
+diary_ind_mapped$DVAge<- as.numeric(as.character(diary_ind_mapped$DVAge))
+macro_behavior_freq<- diary_ind_mapped%>%
+  group_by(Macro.Group,Psychosocial_Stages)%>%
+  summarise(Freq=n())%>%
+  arrange(desc(Freq))
+
+ggplot(macro_behavior_freq%>%
+         filter(Psychosocial_Stages%in% c("50-57","58-67","68-74","75-84")),
+       aes(x=reorder(Macro.Group,-Freq),y=Freq))+
+  geom_col()+ 
+  theme(axis.text.x = element_text(angle = 90, vjust = 0.5, hjust=1,size = 7))+
+  facet_wrap(. ~ Psychosocial_Stages)
 
 
 # ----------------------------------------------
@@ -170,7 +191,6 @@ ggplot(macro_behavior_freq,aes(x=reorder(Macro.Group,-Freq),y=Freq))+
 # Q4 - where do they do those activities from
 
 macro_behavior_freq<- diary_ind_mapped%>%
-  mutate(dow=ifelse(ddayw %in% c('Saturday','Sunday') , 'Sat-Sun','Mon-Fri'))%>%
   group_by(Macro.Group,WhereWhen)%>%
   summarise(Freq=n())%>%
   arrange(desc(Freq))
@@ -193,7 +213,6 @@ ggplot(macro_behavior_freq%>%
 
 macro_behavior_freq<- diary_ind_mapped%>%
   filter(!Enjoy %in% c('NA','not reported'))%>%
-  mutate(dow=ifelse(ddayw %in% c('Saturday','Sunday') , 'Sat-Sun','Mon-Fri'))%>%
   mutate(age_group=ifelse(DVAge<=14,'Children',
                           ifelse(DVAge<=24 ,'Youth',
                                  ifelse(DVAge<=64,'Adults',
