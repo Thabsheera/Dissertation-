@@ -1,11 +1,16 @@
 ---
-title: Predicting & Understanding The Behavioural Footprint Of Older Adults In The
-  UK
+title: Predicting & Understanding the Behavioural Footprint of Older Adults in the UK
 author: "Thabsheera"
 date: "30/05/2022"
 output:
   pdf_document: default
   html_document: default
+  
+header-includes:
+  \usepackage{pdfpages}
+  \usepackage{float}
+  \floatplacement{figure}{H}
+  \floatplacement{table}{H}
 ---
 
 ```{r setup, include=FALSE}
@@ -14,55 +19,98 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Introduction
 
-Technology had succeeded in increasing the life-span of human over the years. But not everyone is living a wealthy, healthy and a happy older life.
-So it's crucial for science to advance in order to improve the quality of life and not just adding years to life. 
+Technology had succeeded in increasing the life-span of human over the years [1]. But not everyone is living a wealthy, healthy and a happy older life. It's crucial for science to advance to improve the quality of life and not just adding years to life. 
 
-Ageing Intelligence is a new term coined by Nic Palmarini (Director or UK National Innovation Centre for Ageing - NICA). According to him ageing intelligence is a comprehensive data-driven approach, leveraging a combination of human knowledge and experience, data analysis, and real-world applied testing and research.
-
-Analysing the trend and generating and amplifying insights from behavioural and market data is one of the key aspects of ageing intelligence. Behavioural data is a very important data irrespective of the domain. If it is an e-commerce market, behavioural data of customers can help in better recommendations and personalisations. When it comes to the behavioural data of older population in the country, it leads to numerous opportunity benefiting both the citizen and business. By knowing what an individual will be doing at a particular time of the day, 
+Ageing Intelligence is a new term coined by Nic Palmarini (Director or UK National Innovation Centre for Ageing - [**NICA**](https://uknica.co.uk/)). According to NICA ageing intelligence is "*a comprehensive data-driven approach, leveraging a combination of human knowledge and experience, data analysis, and real-world applied testing and research*".
+Analysing the trend and amplifying the generated insights from behavioural and market data is one of the key aspects of ageing intelligence. 
 
 
+Behavioural data is crucial irrespective of the business domain. If it is an e-commerce market, behavioural data of customers can help in better recommendations and personalisation. When it comes to older population in the country, the behavioural data can lead to numerous opportunities benefiting both citizen and business. A person's health and lifestyle are related to their habits. If their habit/behaviour can be predicted, which can give insights about their health as well as it can prevent any unforeseen events that can happen. Most importantly, behaviour prediction can help in improve the lifestyle and thereby increase the happiness and longevity of human beings.
 
 
-what is the future
 
-how predicting a behaviour can improve lifestyle
 
 
 
 ## Project Aim
 
-UK time survey data for 2014-15 has diary data for 4,000 households in the UK. Each diary data contains what that individual is doing at a particular time of the day. The high-level aim of this project is to predict what that person will be doing at a given time of the day. This project will require incorporating a classification model (like decision tree or random forest) into a time series component. Because diary data has time series aspect to it and the activities are categorical variables. 
+The high-level aim of this project is to predict what an older person will be doing at a given time of the day. This project will require incorporating a classification model (like decision tree or random forest) into a time series component. Because diary data has time series aspect to it and the activities are categorical variables. 
 
 Along with predicting the activities of older adults at a given hour of the day, combining two machine learning techniques adds a high value to this project.
+
+### Objective 
+
+This project will focus mainly on three objectives:
+
+* Study the data and understand the existing trend of adult behaviours. 
+
+* Visualise the existing trend. 
+
+* Run a time series classification model on the data to predict the adult behaviour.
+
+Optional objective if time permits:
+
+* Recommend an alternative behaviour based on the past enjoyment level on that activity.
 
 
 
 ## Progress 
 
 
+### Initial Research
+
+
 Significant number of papers have been read to understand the past work using diary data and behavioural analytics. 
 
-Accoring to : 
-
-The available data is obtained from UK time-survey data for the period of 2014-15. The data contains diary activities by around 8000 people from 4000 households in the UK. The data is already with a given weight for household and individual so that this will be comparable to the entire UK population. The granularity of the data is household, person, weekday/weekend, 10 minute interval of the day.  
-
-Basic EDA is conducted on the entire data to understand the distribution. Following are the major findings from the data:
-
-1. Age group level 
-2. these kind of activities happen more during weekdays
-3. People over 60 does more of this than other 
-4. Household without children tend to do these activities compared to adults only households.
-5. Most folks enjoy doing self care but a few of this age group enjoy doing travelling more 
-
-To visualise the above findings, a R Shiny dashboard is built. 
+Theory of planned behaviour by Ajzen, 1991 [5] is the foundation of this project. According to this paper, the individual's intention to exhibit a behaviour is dependent on three main factors. First is the *attitude* towards the behaviour and this tells the depth to which a person has favourable or unfavourable judgement of the concerned behaviour. 
+Second one is a social factor called as *subjective norm*, it refers to the perceived social pressure to perform the act. Third one is the *perceived behavioural control*, which refers to the perceived ease or difficulty for performing the behaviour and it reflects the past experience as well as the anticipated barriers. 
 
 
-When it comes to behaviour classification, the data needs to be prepared in a certain way. First of all the important field like activity needed tweaking.
-The activities are micro behaviour like vehicle maintenance, dwelling repair, visiting historic site etc. There are 276 such behaviours which will increase the complexity of a classification model by will requiring 276 output groups. So these micro behaviours are then grouped into 48 groups. For example, activities/ behaviours like feeding the child, teaching the child etc is now under a group called 'child care'. This will reduce the complexity of the model. 
+There have been a few studies on various sectors of the industry based on theory of planned behaviour to predict the customer's or employee's behaviour, but little to no studies are done on diary data. 
+One such study in HR analytics [3], to predict the dishonest behaviour patterns from candidate, made use of the theory of planned behaviour and used multiple classification techniques such as logistic regression, random forests and decision tree.  
 
-The activities are recorded for every 10 minute interval of the day, this interval is then converted to hour of the day. So that instead of 144 time interval, 24 time intervals can be used for predicting the activities in that interval. 
-The 10 minute interval is avoided since most of the activities overlap the intervals. To convert the data into hour level, the activity is replaced with the most frequent activity in that hour. 
+One study which was based on diary data [4] defined behaviour in terms of target, action, context and time(TACT) principle (Ajzen, 2006)[6]. Time series methods have been used in this study to test the dependency on daily sequential measures.
+
+
+
+### Data Exploration & Manipulation
+
+UK time survey data for 2014-15[2] has diary and household interview data for 4,000 households in the UK. Each diary data contains what that individual is doing at a particular time of the day and around 8000 people have participated in the survey. 
+
+The data is already given with a weight for household and individual so that each entry will be comparable to the entire UK population. The granularity of the data is household, person, weekday/weekend, and 10 minute interval of the day.  
+
+* Basic EDA is conducted on the entire data to understand the distribution. Following are the major findings from the data:
+  1. 50% of the individuals participated in the diary activity are from the generations *baby boomers* and *Gen X*. Gen X spends travels more than baby boomers whereas baby boomers tends to relax at home. Gen X also spends much higher time in childcare than baby boomers.
+
+  2. When it comes to psychosocial stages among older adults, the amount of time put in the main job decrease drastically after the age of 57. Also after the age 67, people tends to go for a retirement and spends more time at home.
+  
+  3. Weekend calls for entertainment for majority of the people. Activities such as social life and TV watching happens more during weekend.
+  
+  4. Household with children tend to be more active with entertainment and travel activities compared to adults only households.
+  
+  5. The activities which people enjoy the most are self care related activities. Most people rate travelling at a medium enjoyment level.
+
+* To visualise the above findings, a R Shiny dashboard is built. Snapshot of the first version of dashboard is given in Figure 1. More filters and plots will be added. 
+
+```{r ,echo=FALSE,fig.width=5,fig.height=5, fig.cap = "Shiny Snapshot"}
+knitr::include_graphics(path = "shiny_ss.JPG")
+```
+
+
+* When it comes to behaviour classification, the data needs to be prepared in a certain way. First of all, the important field like activity needed tweaking. The activities are micro behaviour like vehicle maintenance, dwelling repair, visiting historic site etc. There are 276 such behaviours which will increase the complexity of a classification model by will requiring 276 output groups. So, these micro behaviours are then grouped into 48 groups. For example, activities/ behaviours like feeding the child, teaching the child etc is now under a group called 'childcare'. This will reduce the complexity of the model. 
+
+* The activities are recorded for every 10-minute interval of the day; this interval is then converted to hour of the day. So that instead of 144-time interval, 24-time intervals can be used for predicting the activities in that interval. 
+The 10-minute interval is avoided since most of the activities overlap the intervals. To convert the data into hour level, the activity is replaced with the most frequent activity in that hour. 
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -71,7 +119,31 @@ The 10 minute interval is avoided since most of the activities overlap the inter
 
 ## Work Plan 
 
-Below is the rough work plan for the project 
+Plan for this project is given in Figure 2. 
+
+```{r ,echo=FALSE,fig.width=5,fig.height=5, fig.cap = "Project Plan"}
+knitr::include_graphics(path = "Project_Plan.JPG")
+```
+
+<!-- \begin{center} <br> -->
+<!-- \includegraphics[width=8in]{Project_Plan.pdf} <br> -->
+<!-- \end{center} -->
+
+<!-- \includepdf[pages=-,nup=1,pagecommand={}]{Project_Plan.pdf} -->
+
+## Refernces
+
+1. Jan Vijg, Aubrey D.N.J. de Grey: Innovating Aging: Promises and Pitfalls on the Road to Life Extension. Gerontology 2014;60:373–380.
+
+2. Sullivan, O., Gershuny, J. (2021). United Kingdom Time Use Survey, 2014-2015. [data collection]. UK Data Service. SN: 8128, DOI: 10.5255/UKDA-SN-8128-1
+
+3. Peisl, T., Edlmann, R. (2020). Exploring Technology Acceptance and Planned Behaviour by the Adoption of Predictive HR Analytics During Recruitment. In: Yilmaz, M., Niemann, J., Clarke, P., Messnarz, R. (eds) Systems, Software and Services Process Improvement. EuroSPI 2020. Communications in Computer and Information Science, vol 1251. Springer, Cham. https://doi.org/10.1007/978-3-030-56441-4_13
+
+4. Nicola Hobbs , Diane Dixon , Marie Johnston & Kate Howie (2013) Can the theory of planned behaviour predict the physical activity behaviour of individuals?, Psychology & Health, 28:3, 234-249, DOI: 10.1080/08870446.2012.716838
+
+5. Ajzen, I. (1991), “The theory of planned behavior”, Organizational Behavior and Human Decision Processes, Vol. 50 No. 2, pp. 179-211.
+
+6. Ajzen, Icek. "Constructing a theory of planned behavior questionnaire." (2006)
 
 
 ## Research Data Management Proforma
@@ -79,17 +151,34 @@ Below is the rough work plan for the project
 
 
 
-\begin{center} <br>
-\includegraphics[width=8in]{RDMP_Thabsheera.pdf} <br>
-\end{center}
+<!-- \begin{center} <br> -->
+<!-- \includegraphics[width=8in]{RDMP_Thabsheera.pdf} <br> -->
+<!-- \end{center} -->
+
+<!-- ![Alternate Name](RDMP_Thabsheera.pdf){width=500px} -->
 
 
 
 
+```{r ,echo=FALSE,out.width = "85%", fig.cap = "caption"}
+# knitr::include_graphics(path = "RDMP_Thabsheera.pdf")
+```
+
+<!-- All pages but w/o caption and taking a full page -->
+
+\includepdf[pages=-,nup=1,pagecommand={}]{RDMP_Thabsheera.pdf}
+
+<!-- Alternative, using explicit LaTeX commands. -->
+
+<!-- \begin{figure} -->
+<!-- \includegraphics[page=1,width=0.5\linewidth]{RDMP_Thabsheera.pdf} -->
+<!-- \includegraphics[page=2,width=0.5\linewidth]{RDMP_Thabsheera.pdf} -->
+<!-- \caption{\label{fig:test} Test.} -->
+<!-- \end{figure} -->
 
 
-```{python}
+```{r,echo=FALSE}
 # !pip install pandas
-import pandas
+#import pandas
 ```
 
